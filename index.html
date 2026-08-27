@@ -26,7 +26,7 @@
     }
 
     .container {
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -107,6 +107,155 @@
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
+
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 15px 0;
+      color: #38bdf8;
+      font-size: 14px;
+    }
+    .loader i { font-size: 22px; animation: spin 1s linear infinite; margin-bottom: 6px; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    #resultContainer {
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    .raw-box {
+      background-color: #0f172a;
+      padding: 15px;
+      border-radius: 14px;
+      border: 1px solid #334155;
+      overflow-x: auto;
+      font-family: monospace;
+      white-space: pre-wrap;
+      font-size: 13px;
+      color: #4ade80;
+      text-align: left;
+      max-height: 300px;
+    }
+
+    .error-card {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      padding: 15px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 18px;
+      text-align: center;
+    }
+
+    .footer p { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+
+    .ig-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 30px;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    .ig-btn:hover { transform: scale(1.03); box-shadow: 0 5px 20px rgba(220, 39, 67, 0.4); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="pfp-wrapper">
+      <img src="https://i.ibb.co/39BqQX9K/image.jpg" alt="Developer Sohail" class="pfp-img" onerror="this.src='https://ui-avatars.com/api/?name=Developer+Sohail&background=0284c7&color=fff'">
+    </div>
+    <h1>Developer Sohail</h1>
+    <p>Official Number Intelligence Tool</p>
+  </div>
+
+  <div class="search-box">
+    <div class="input-wrapper">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="phone" placeholder="Enter 10-digit number" maxlength="10">
+    </div>
+    <button onclick="fetchDetails()">Search</button>
+  </div>
+
+  <div class="loader" id="loader">
+    <i class="fa-solid fa-circle-notch"></i>
+    <p>Fetching details...</p>
+  </div>
+
+  <div id="resultContainer"></div>
+
+  <div class="footer">
+    <p>Created by <b>Developer Sohail</b></p>
+    <a href="https://instagram.com/clip2editz" target="_blank" class="ig-btn">
+      <i class="fa-brands fa-instagram"></i> Follow on Instagram (@clip2editz)
+    </a>
+  </div>
+</div>
+
+<script>
+  async function fetchDetails() {
+    const number = document.getElementById('phone').value.trim();
+    const loader = document.getElementById('loader');
+    const resultContainer = document.getElementById('resultContainer');
+
+    if (!number || number.length < 10) {
+      alert("Kripya 10-digit phone number daalein.");
+      return;
+    }
+
+    loader.style.display = 'block';
+    resultContainer.style.display = 'none';
+    resultContainer.innerHTML = '';
+
+    const apiKey = "MY_TEST_KEY_123"; 
+    const apiUrl = `https://nitin-developer-api-paid.nitinshab43.workers.dev/api?action=num&number=${number}&key=${apiKey}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      loader.style.display = 'none';
+      resultContainer.style.display = 'block';
+
+      // Override Owner Tags
+      if (data.owner) data.owner = "@sohailcyberexpert";
+      if (data.metadata && data.metadata.key_owner) data.metadata.key_owner = "sohailcyberexpert";
+
+      if (data.status === "error" || data.error) {
+        resultContainer.innerHTML = `<div class="error-card">${data.message || data.error || 'No data found!'}</div>`;
+      } else {
+        resultContainer.innerHTML = `<div class="raw-box">${JSON.stringify(data, null, 2)}</div>`;
+      }
+
+    } catch (error) {
+      loader.style.display = 'none';
+      resultContainer.style.display = 'block';
+      resultContainer.innerHTML = `<div class="error-card">API Key Invalid ya Server Issue hai!</div>`;
+    }
+  }
+</script>
+
+</body>
+</html>
       align-items: center;
       gap: 8px;
     }
