@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Info Lookup | Developer Sohail</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    
+    .card { background-color: #1e293b; border-radius: 16px; padding: 30px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; text-align: center; }
+    
+    /* Branding Header */
+    .branding h1 { font-size: 26px; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+    .branding p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+    
+    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    input { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid #475569; background-color: #0f172a; color: #fff; font-size: 16px; outline: none; }
+    input:focus { border-color: #38bdf8; }
+    button { padding: 12px 20px; border-radius: 8px; border: none; background-color: #0284c7; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    button:hover { background-color: #0369a1; }
+    
+    #loader { display: none; color: #94a3b8; font-size: 14px; margin-bottom: 15px; }
+    .result-box { display: none; background-color: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; overflow-x: auto; font-family: monospace; white-space: pre-wrap; font-size: 13px; color: #4ade80; text-align: left; margin-bottom: 25px; }
+    .error { color: #f87171 !important; }
+
+    /* Footer / Instagram Section */
+    .footer { border-top: 1px solid #334155; padding-top: 15px; font-size: 14px; color: #94a3b8; }
+    .ig-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px 16px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; text-decoration: none; font-weight: bold; border-radius: 20px; font-size: 14px; transition: opacity 0.2s; }
+    .ig-btn:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Developer Sohail Branding -->
+  <div class="branding">
+    <h1>Developer Sohail</h1>
+    <p>Official Number Lookup Tool</p>
+  </div>
+
+  <!-- Search Input -->
+  <div class="input-group">
+    <input type="text" id="phone" placeholder="Enter 10-digit number" maxlength="10">
+    <button onclick="fetchDetails()">Search</button>
+  </div>
+
+  <div id="loader">Fetching details...</div>
+  <div id="result" class="result-box"></div>
+
+  <!-- clip2editz Instagram Section -->
+  <div class="footer">
+    <span>Created by <b>Developer Sohail</b></span><br>
+    <a href="https://instagram.com/clip2editz" target="_blank" class="ig-btn">
+      Follow on Instagram (@clip2editz)
+    </a>
+  </div>
+</div>
+
+<script>
+  async function fetchDetails() {
+    const number = document.getElementById('phone').value.trim();
+    const loader = document.getElementById('loader');
+    const resultDiv = document.getElementById('result');
+
+    if (!number || number.length < 10) {
+      alert("Kripya sahi 10-digit phone number dalein.");
+      return;
+    }
+
+    loader.style.display = 'block';
+    resultDiv.style.display = 'none';
+    resultDiv.classList.remove('error');
+
+    // Apni real API key yahan daal dena
+    const apiKey = "MY_TEST_KEY_123"; 
+    const apiUrl = `https://nitin-developer-api-paid.nitinshab43.workers.dev/api?action=num&number=${number}&key=${apiKey}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      // Owner replace logic (FizzaGirl -> sohailcyberexpert)
+      if (data.owner) {
+        data.owner = "@sohailcyberexpert";
+      }
+      if (data.metadata && data.metadata.key_owner) {
+        data.metadata.key_owner = "sohailcyberexpert";
+      }
+
+      loader.style.display = 'none';
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = JSON.stringify(data, null, 2);
+    } catch (error) {
+      loader.style.display = 'none';
+      resultDiv.style.display = 'block';
+      resultDiv.classList.add('error');
+      resultDiv.textContent = "Error: Invalid API key or Server issue.";
+    }
+  }
+</script>
+
+</body>
+</html>
